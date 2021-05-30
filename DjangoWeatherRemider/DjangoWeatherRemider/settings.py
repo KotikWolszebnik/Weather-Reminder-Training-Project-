@@ -83,10 +83,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'django-weather-reminder',
-        'USER' : 'user',
-        'PASSWORD' : '1234567890',
-        'HOST' : '127.0.0.1',
-        'PORT' : '5432',
+        'USER': 'user',
+        'PASSWORD': '1234567890',
+        'HOST': '127.0.0.1',  # Use 'db' option for Docker image making
+        'PORT': 5432,
     }
 }
 
