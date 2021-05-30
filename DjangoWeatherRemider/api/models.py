@@ -19,7 +19,7 @@ class City(Model):
     id = IntegerField(primary_key=True, unique=True)
     name = CharField(max_length=85)
     state_code = CharField(max_length=9, null=True)
-    country = CharField(max_length=20, null=True)
+    country = CharField(max_length=100, null=True)
     country_code = CharField(max_length=3, null=True)
 
     def __str__(self):
