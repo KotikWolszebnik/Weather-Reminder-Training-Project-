@@ -1,8 +1,6 @@
 from django.contrib.auth.forms import UserCreationForm
 from django.db.transaction import atomic
 
-from .models import User
-
 
 class RegistrationForm(UserCreationForm):
     @atomic
@@ -11,7 +9,3 @@ class RegistrationForm(UserCreationForm):
         account.username = account.email
         account.save()
         return account
-
-    class Meta(UserCreationForm):
-        model = User
-        fields = ('email', )
