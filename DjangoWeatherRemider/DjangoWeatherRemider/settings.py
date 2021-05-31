@@ -41,8 +41,17 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # Our app
     'api',
+
+    # third party package for user registration and authentication endpoints	
+    'djoser',
+
+    # rest API implementation library for django
     'rest_framework',
+
+    # JWT authentication backend library
+    'rest_framework_simplejwt',
 ]
 
 MIDDLEWARE = [
