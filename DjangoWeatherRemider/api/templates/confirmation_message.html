@@ -13,8 +13,8 @@
     <p><b>Your email:</b> {{ account.email }}</p>
     <p><b>Please, go by the link for confirm your registration:</b></p>
     <p><b>
-        <a href="http://{{ host }}/confirm/{{ unique_string }}/">
-            http://{{ host }}/confirm/{{ unique_string }}/
+        <a href="http://{{ host }}/api/v1/confirm/?token={{ unique_string }}">
+            http://{{ host }}/api/v1/confirm/?token={{ unique_string }}
         </a>
     </b></p>
     <footer>
