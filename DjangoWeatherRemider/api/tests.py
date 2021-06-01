@@ -24,16 +24,14 @@ class YourTestClass(TestCase):
                 country_code=city['country_code'],
             )
             obj.save()
-    
+
     def register_user(self):
         """Make the fixture."""
         resp = self.client.post(
-            '/registration/',
+            '/api/v1/register/',
             data=dict(
-                username='test_user@test.com',
-                email='test_user@test.com',
-                password1='kufkutfy764754dsdddddh',
-                password2='kufkutfy764754dsdddddh',
+                email='test@user.com',
+                password='kufkutfy764754dsdddddh',
             ),
             follow=True,
         )
@@ -41,11 +39,6 @@ class YourTestClass(TestCase):
         self.unique_token = str(mail.outbox[0].message())\
             .split('/confirm/')[1].split('/', maxsplit=1)[0]
         return resp
-
-    def register_and_confirm(self):
-        """Make the fixture."""
-        self.register_user()
-        return self.client.get(f'/confirm/{self.unique_token}/')
 
     def test_registration(self):
         resp = self.register_user()  # fixture
