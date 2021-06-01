@@ -44,9 +44,6 @@ INSTALLED_APPS = [
     # Our app
     'api',
 
-    # third party package for user registration and authentication endpoints	
-    'djoser',
-
     # rest API implementation library for django
     'rest_framework',
 
@@ -160,7 +157,7 @@ WEATHERBIT_KEY = '5b0df214388c43089d3cacda9e39b8e8'
 EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_PORT = 465
 EMAIL_HOST_USER = 'nutmegraw@yandex.ru'
-EMAIL_HOST_PASSWORD = 'ptqjxqsdajomecup'
+EMAIL_HOST_PASSWORD = 'siyuepyqpnbyymfi'
 EMAIL_USE_TLS = False
 EMAIL_USE_SSL = True
 
