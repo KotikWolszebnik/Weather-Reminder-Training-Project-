@@ -5,6 +5,7 @@ from django.http import JsonResponse
 from django.template.loader import render_to_string
 from jwt import ExpiredSignatureError, decode, DecodeError
 from rest_framework import status
+from rest_framework.views import APIView
 from rest_framework.generics import CreateAPIView, GenericAPIView
 from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
@@ -13,7 +14,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from .models import City, Subscription
 from .permissions import IsActive, IsOwner, IsReadOnly
 from .serializers import (CitySerializer, RegisterSerializer,
-                          SubscriptionSerializer)
+                          SubscriptionSerializer, ConfirmSerializer)
 from .utils import CLUDAPIView
 
 # Create your views here.
@@ -75,7 +76,8 @@ class RegisterView(CreateAPIView):
             )
 
 
-class ConfirmView(GenericAPIView):
+class ConfirmView(APIView):
+    serializer_class = ConfirmSerializer
 
     def get(self, request):
         try:
