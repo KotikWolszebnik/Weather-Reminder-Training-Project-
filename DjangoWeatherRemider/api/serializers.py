@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework.serializers import (CurrentUserDefault, HiddenField,
-                                        ModelSerializer)
+                                        ModelSerializer, CharField)
 
 from .models import City, Subscription
 
@@ -20,6 +20,14 @@ class RegisterSerializer(ModelSerializer):
             is_active=False,
             **validated_data,
         )
+
+
+class ConfirmSerializer(ModelSerializer):
+    token = CharField(max_length=500)
+
+    class Meta:
+        model = User
+        fields = ['token']
 
 
 class SubscriptionSerializer(ModelSerializer):
