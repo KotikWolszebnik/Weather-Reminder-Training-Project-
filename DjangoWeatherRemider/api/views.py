@@ -83,7 +83,7 @@ class ConfirmView(GenericAPIView):
                 request.GET.get('token'),
                 settings.SECRET_KEY,
             )
-            user = User.objects.get(id=payload['id'])
+            user = User.objects.get(id=payload['user_id'])
             user.is_active = True
             user.save()
             return Response(
