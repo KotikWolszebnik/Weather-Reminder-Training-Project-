@@ -1,20 +1,20 @@
 from django.conf import settings
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
 from django.http import JsonResponse
 from django.template.loader import render_to_string
-from jwt import ExpiredSignatureError, decode, DecodeError
+from jwt import DecodeError, ExpiredSignatureError, decode
 from rest_framework import status
-from rest_framework.views import APIView
-from rest_framework.generics import CreateAPIView, GenericAPIView
+from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from .models import City, Subscription
 from .permissions import IsActive, IsOwner, IsReadOnly
-from .serializers import (CitySerializer, RegisterSerializer,
-                          SubscriptionSerializer, ConfirmSerializer)
+from .serializers import (CitySerializer, ConfirmSerializer,
+                          RegisterSerializer, SubscriptionSerializer)
 from .utils import CLUDAPIView
 
 # Create your views here.
@@ -43,7 +43,7 @@ class CityView(CLUDAPIView):
 
 
 class RegisterView(CreateAPIView):
-    queryset = User.objects.all()
+    queryset = get_user_model().objects.all()
     serializer_class = RegisterSerializer
     permission_classes = (AllowAny, )
 
@@ -58,7 +58,7 @@ class RegisterView(CreateAPIView):
 
     def perform_create(self, serializer, request):
         serializer.save()
-        user = User.objects.get(email=serializer.data['email'])
+        user = get_user_model().objects.get(email=serializer.data['email'])
         token = RefreshToken.for_user(user).access_token
         send_mail(
             subject='Confirm registration',
@@ -70,7 +70,7 @@ class RegisterView(CreateAPIView):
                 context=dict(
                     host=request.get_host(),
                     account=user,
-                    unique_string=str(token),
+                    unique_string=token,
                     ),
                 ),
             )
@@ -85,8 +85,8 @@ class ConfirmView(APIView):
                 request.GET.get('token'),
                 settings.SECRET_KEY,
             )
-            user = User.objects.get(id=payload['user_id'])
-            user.is_active = True
+            user = get_user_model().objects.get(id=payload['user_id'])
+            user.confirmed = True
             user.save()
             return Response(
                 dict(email='Successfully activated'),

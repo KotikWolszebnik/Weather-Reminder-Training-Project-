@@ -1,7 +1,19 @@
-from django.db.models import (CASCADE, CharField, ForeignKey, IntegerField,
-                              Model)
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import AbstractUser
+from django.db.models import (CASCADE, BooleanField, CharField, EmailField,
+                              ForeignKey, IntegerField, Model)
+
 # Create your models here.
+
+
+class Account(AbstractUser):
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
+    username = None
+    first_name = None
+    last_name = None
+    confirmed = BooleanField(default=False)
+    email = EmailField(unique=True)
 
 
 class Subscription(Model):
@@ -9,7 +21,7 @@ class Subscription(Model):
         (1, '1'), (3, '3'), (6, '6'), (12, '12'), (24, '24'),
     ]
     user = ForeignKey(
-        User, on_delete=CASCADE, related_name='subscriptions',
+        get_user_model(), on_delete=CASCADE, related_name='subscriptions',
     )
     city = ForeignKey('City', on_delete=CASCADE)
     notification_period = IntegerField(choices=NOTIFICATION_PERIODS)
