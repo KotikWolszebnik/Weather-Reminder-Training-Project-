@@ -30,7 +30,6 @@ ALLOWED_HOSTS = []
 
 LOGIN_URL = '/auth_need/'
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -99,6 +98,8 @@ DATABASES = {
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
+
+AUTH_USER_MODEL = 'api.Account'
 
 AUTH_PASSWORD_VALIDATORS = [
     {
