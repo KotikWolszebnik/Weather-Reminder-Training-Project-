@@ -25,11 +25,11 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
     path('register/', RegisterView.as_view()),
-    path('confirm/', ConfirmView.as_view()),
+    path('confirm/<str:token>/', ConfirmView.as_view()),
 
     path('city/search_by_name/', CityView.as_view()),
-    path('city/<int:pk>/', CityView.as_view()),
 
+    path('subscription/', SubscriptionView.as_view()),
     path('subscription/all/', SubscriptionView.as_view()),
-    path('subscription/<int:pk>', SubscriptionView.as_view()),
+    path('subscription/<int:pk>/', SubscriptionView.as_view()),
 ]
