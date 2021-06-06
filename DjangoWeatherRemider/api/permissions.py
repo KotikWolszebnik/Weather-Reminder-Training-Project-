@@ -8,11 +8,9 @@ class IsOwner(BasePermission):
 
 class IsReadOnly(BasePermission):
     def has_object_permission(self, request, view, obj):
-        if request.method in SAFE_METHODS:
-            return True
-        return False
+        return request.method in SAFE_METHODS
 
 
-class IsActive(BasePermission):
+class IsConfirmed(BasePermission):
     def has_object_permission(self, request, view, obj):
-        return request.user.is_active
+        return request.user.confirmed
