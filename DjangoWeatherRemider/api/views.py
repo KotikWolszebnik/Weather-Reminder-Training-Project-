@@ -1,21 +1,17 @@
-from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
-from django.http import JsonResponse
 from django.template.loader import render_to_string
-from jwt import DecodeError, ExpiredSignatureError, decode
 from rest_framework import status
-from rest_framework.generics import CreateAPIView
+from rest_framework.generics import CreateAPIView, ListAPIView
 from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework_simplejwt.tokens import RefreshToken
 
 from .models import City, Subscription
-from .permissions import IsActive, IsOwner, IsReadOnly
-from .serializers import (CitySerializer, ConfirmSerializer,
-                          RegisterSerializer, SubscriptionSerializer)
-from .utils import CLUDAPIView
+from .permissions import IsConfirmed, IsOwner, IsReadOnly
+from .serializers import (AccountSerializer, CitySerializer,
+                          SubscriptionSerializer)
+from .utils import CLUDAPIView, TokenGenerator
 
 # Create your views here.
 
@@ -23,29 +19,28 @@ from .utils import CLUDAPIView
 
 
 class SubscriptionView(CLUDAPIView):
-    queryset = Subscription.objects.all()
     serializer_class = SubscriptionSerializer
-    permission_classes = [IsAuthenticated & IsActive & IsOwner | IsAdminUser]
+    permission_classes = [IsAuthenticated & IsConfirmed & IsOwner | IsAdminUser]
+
+    def get_queryset(self):
+        return Subscription.objects.filter(user=self.request.user)
 
 
-class CityView(CLUDAPIView):
-    queryset = City.objects.all()
+class CityView(ListAPIView):
     serializer_class = CitySerializer
-    permission_classes = [IsAuthenticated & IsActive & IsReadOnly | IsAdminUser]
+    permission_classes = [IsAuthenticated & IsConfirmed & IsReadOnly | IsAdminUser]
 
-    def get(self, request, *args, **kwargs):
-        return JsonResponse(
-            serialize(
-                'json',
-                self.queryset.filter(name=request.GET['name']),
-            ),
-        )
+    def get_queryset(self):
+        city_name = self.request.GET['name']
+        if city_name is not None:
+            queryset = City.objects.filter(name=city_name)
+        return queryset
 
 
 class RegisterView(CreateAPIView):
     queryset = get_user_model().objects.all()
-    serializer_class = RegisterSerializer
-    permission_classes = (AllowAny, )
+    serializer_class = AccountSerializer
+    permission_classes = [AllowAny]
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -59,7 +54,7 @@ class RegisterView(CreateAPIView):
     def perform_create(self, serializer, request):
         serializer.save()
         user = get_user_model().objects.get(email=serializer.data['email'])
-        token = RefreshToken.for_user(user).access_token
+        token = TokenGenerator.make_token(user)
         send_mail(
             subject='Confirm registration',
             message='',
@@ -77,28 +72,20 @@ class RegisterView(CreateAPIView):
 
 
 class ConfirmView(APIView):
-    serializer_class = ConfirmSerializer
+    serializer_class = AccountSerializer
+    permission_classes = [IsAuthenticated]
 
-    def get(self, request):
-        try:
-            payload = decode(
-                request.GET.get('token'),
-                settings.SECRET_KEY,
-            )
-            user = get_user_model().objects.get(id=payload['user_id'])
-            user.confirmed = True
-            user.save()
+    def get(self, request, *args, **kwargs):
+        token = kwargs['token']
+        if not TokenGenerator.check_token(request.user, token):
             return Response(
-                dict(email='Successfully activated'),
+                dict(error='Something went wrong, the confirmation failed!'),
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        else:
+            request.user.confirmed = True
+            request.user.save()
+            return Response(
+                dict(message="You've got confirming success."),
                 status=status.HTTP_200_OK,
-            )
-        except ExpiredSignatureError:
-            return Response(
-                dict(error='Activation expired'),
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        except DecodeError:
-            return Response(
-                dict(error='Invalid token'),
-                status=status.HTTP_400_BAD_REQUEST,
             )
