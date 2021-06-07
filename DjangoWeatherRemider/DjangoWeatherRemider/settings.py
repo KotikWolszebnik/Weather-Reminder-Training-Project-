@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+from os import getenv
 import django_heroku
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -21,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-snvsd6i!qyc(xc4*^34b49!w1ei%bwt9up2lr##g6*)e&y$acm'
+SECRET_KEY = getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -88,8 +89,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'django-weather-reminder',
-        'USER': 'user',
-        'PASSWORD': '1234567890',
+
+        'USER': getenv('DB_USER'),
+        'PASSWORD': getenv('DB_PASSWORD'),
+
         'HOST': '127.0.0.1',  # Use 'db' option for Docker image making
         'PORT': 5432,
     }
@@ -150,12 +153,12 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10,
 }
 
-WEATHERBIT_KEY = '5b0df214388c43089d3cacda9e39b8e8'
+WEATHERBIT_KEY = getenv('WEATHERBIT_KEY')
 
 EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_PORT = 465
-EMAIL_HOST_USER = 'nutmegraw@yandex.ru'
-EMAIL_HOST_PASSWORD = 'siyuepyqpnbyymfi'
+EMAIL_HOST_USER = getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = getenv('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = False
 EMAIL_USE_SSL = True
 
