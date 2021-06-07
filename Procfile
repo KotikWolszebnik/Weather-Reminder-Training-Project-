@@ -1,1 +1,1 @@
-web: gunicorn --pythonpath DjangoWeatherReminder api.wsgi
+web: gunicorn --pythonpath DjangoWeatherReminder DjangoWeatherRemider.wsgi
