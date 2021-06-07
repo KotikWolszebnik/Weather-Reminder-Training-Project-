@@ -1,8 +1,10 @@
+from django.core.mail import send_mail
+from nanoid import generate
 from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import (CreateModelMixin, DestroyModelMixin,
                                    ListModelMixin, UpdateModelMixin)
-from nanoid import generate
-
+from requests import get
+from django.conf import settings
 # Create your classes here.
 
 
@@ -43,3 +45,16 @@ class CLUDAPIView(
 
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
+
+
+# Create your functions here
+def send_remind(user, sity_id: int):
+    key = settings.WEATHERBIT_KEY
+    send_mail(
+        subject='Weather Remind',
+        message=get(
+            f'https://api.weatherbit.io/v2.0/current?key={key}&city_id={sity_id}',
+        ).content,
+        from_email='nutmegraw@yandex.ru',
+        recipient_list=[user.email],
+        )
