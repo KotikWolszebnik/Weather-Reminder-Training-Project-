@@ -7,7 +7,7 @@ services:
       - postgres_data:/var/lib/postgres/data
   web:
     build: .
-    command: python /usr/src/task-17-create-basic-application/DjangoWeatherRemider/manage.py runserver 0.0.0.0:8000
+    command: python /usr/src/task-17-create-basic-application/DjangoWeatherReminder/manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/usr/src/task-17-create-basic-application
     ports:

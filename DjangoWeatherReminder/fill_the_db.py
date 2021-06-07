@@ -5,7 +5,7 @@ from os.path import dirname
 from django import setup
 from django.db.transaction import atomic
 
-environ.setdefault("DJANGO_SETTINGS_MODULE", "DjangoWeatherRemider.settings")
+environ.setdefault("DJANGO_SETTINGS_MODULE", "DjangoWeatherReminder.settings")
 setup()
 
 from api.models import City
