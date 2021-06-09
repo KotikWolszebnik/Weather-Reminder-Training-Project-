@@ -98,6 +98,10 @@ DATABASES = {
     }
 }
 
+# Celery Configuration Options
+CELERY_TIMEZONE = "Asia/yekaterinburg"
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
