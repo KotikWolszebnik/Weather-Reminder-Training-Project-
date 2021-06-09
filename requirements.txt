@@ -19,3 +19,4 @@ gunicorn==20.1.0
 nanoid==2.0.0
 requests==2.25.1
 Celery==5.1.0
+redis==3.5.3
