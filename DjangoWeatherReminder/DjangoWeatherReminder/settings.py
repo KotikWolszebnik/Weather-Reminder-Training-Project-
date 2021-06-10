@@ -99,6 +99,7 @@ DATABASES = {
 }
 
 # Celery Configuration Options
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
 CELERY_TIMEZONE = "Asia/yekaterinburg"
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
