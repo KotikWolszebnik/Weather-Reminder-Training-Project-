@@ -29,7 +29,10 @@ urlpatterns = [
 
     path('city/search_by_name/', CityView.as_view()),
 
-    path('subscription/', SubscriptionView.as_view()),
-    path('subscription/all/', SubscriptionView.as_view()),
-    path('subscription/<int:pk>/', SubscriptionView.as_view()),
+    path('subscription/', SubscriptionView.as_view(dict(post='create'))),
+    path('subscription/all/', SubscriptionView.as_view(dict(get='list'))),
+    path(
+        'subscription/<int:pk>/',
+        SubscriptionView.as_view(dict(put='partial_update', delete='destroy')),
+    ),
 ]
