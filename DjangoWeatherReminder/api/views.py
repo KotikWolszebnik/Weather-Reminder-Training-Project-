@@ -6,21 +6,34 @@ from rest_framework.generics import CreateAPIView, ListAPIView
 from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.viewsets import ModelViewSet
 
 from .models import City, Subscription
 from .permissions import IsConfirmed, IsOwner, IsReadOnly
 from .serializers import (AccountSerializer, CitySerializer,
                           SubscriptionSerializer)
-from .utils import CLUDAPIView, TokenGenerator
+from .utils import TokenGenerator
 
 # Create your views here.
 
 # Class-based views
 
 
-class SubscriptionView(CLUDAPIView):
+class SubscriptionView(ModelViewSet):
     serializer_class = SubscriptionSerializer
     permission_classes = [IsAuthenticated & IsConfirmed & IsOwner | IsAdminUser]
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
 
     def get_queryset(self):
         return Subscription.objects.filter(user=self.request.user)

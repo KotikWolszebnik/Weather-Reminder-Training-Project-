@@ -1,10 +1,9 @@
+from django.conf import settings
 from django.core.mail import send_mail
 from nanoid import generate
-from rest_framework.generics import GenericAPIView
-from rest_framework.mixins import (CreateModelMixin, DestroyModelMixin,
-                                   ListModelMixin, UpdateModelMixin)
 from requests import get
-from django.conf import settings
+
+
 # Create your classes here.
 
 
@@ -28,23 +27,6 @@ class TokenGenerator(object):
         obj = TokenGenerator(account)
         cls.tokens_storage.append(obj)
         return obj.token
-
-
-class CLUDAPIView(
-    GenericAPIView, CreateModelMixin, DestroyModelMixin,
-    ListModelMixin, UpdateModelMixin,
-):
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
-
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-
-    def put(self, request, *args, **kwargs):
-        return self.partial_update(request, *args, **kwargs)
-
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
 
 
 # Create your functions here
