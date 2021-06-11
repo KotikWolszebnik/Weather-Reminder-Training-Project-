@@ -1,20 +1,41 @@
 version: "3.9"
    
 services:
-  db:
-    image: postgres:13.3
-    volumes:
-      - postgres_data:/var/lib/postgres/data
-  web:
-    build: .
-    command: python /usr/src/task-17-create-basic-application/DjangoWeatherReminder/manage.py runserver 0.0.0.0:8000
-    volumes:
-      - .:/usr/src/task-17-create-basic-application
-    ports:
-      - "8000:8000"
-    depends_on: 
-      - db
+    web:
+        build: .
+        command: python /usr/src/django-weather-reminder/DjangoWeatherReminder/manage.py runserver 0.0.0.0:8000
+        volumes:
+            - .:/usr/src/django-weather-reminder
+        ports:
+            - "8000:8000"
+        env_file:
+            - ./.env
+        depends_on: 
+            - db
+    db:
+        image: postgres:13.3
+        volumes:
+            - postgres_data:/var/lib/postgres/data
+        ports:
+            - "5432:5432"
+        environment:
+            - POSTGRES_USER=user
+            - POSTGRES_PASSWORD=1234567890
+            - POSTGRES_DB=django-weather-reminder
+    redis:
+        image: redis:alpine
+    celery:
+        restart: always
+        build:
+            context: .
+        command: celery -A app worker -l info
+        volumes:
+            - postgres_data:/var/lib/postgres/data
+        depends_on:
+            - db
+            - redis
+            - web
 
 volumes:
-  postgres_data:
+    postgres_data:
 
