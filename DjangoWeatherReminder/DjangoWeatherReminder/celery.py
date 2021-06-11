@@ -21,13 +21,9 @@ app.autodiscover_tasks()
 def generate_shedule() -> dict:
     shedule = dict()
     for period in [1, 3, 6, 12, 24]:
-        if period == 24:
-            hour = 0
-        else:
-            hour = period
         shedule[f'run-every {period}'] = dict(
             task='tasks.send_weather_notification',
-            schedule=crontab(hour=hour),
+            schedule=crontab(hour=f'*/{period}'),
             kwargs=dict(period=period),
         )
     return shedule
