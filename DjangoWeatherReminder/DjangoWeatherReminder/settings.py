@@ -93,13 +93,17 @@ DATABASES = {
         'USER': getenv('DB_USER'),
         'PASSWORD': getenv('DB_PASSWORD'),
 
-        'HOST': '127.0.0.1',  # Use 'db' option for Docker image making
+        'HOST': getenv('DB_HOST'),  # Use 'db' option for Docker image making
         'PORT': 5432,
     }
 }
+# Redis Configuration Options
+REDIS_HOST = '127.0.0.1'
+REDIS_PORT = 6379
 
 # Celery Configuration Options
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_BROKER_URL = f'redis://{REDIS_HOST}:{REDIS_PORT}/0'
+CELERY_RESULT_BACKEND = f'redis://{REDIS_HOST}:{REDIS_PORT}/0'
 CELERY_TIMEZONE = "Asia/yekaterinburg"
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
